@@ -1,12 +1,14 @@
 <?php
 
 //error_reporting(E_ALL);
+require('dbconnect.php');
 require('phpqrcode/qrlib.php');
 require('signing.php');
 
+
 //Invoke the function
-$data_to_sign = "HelloWorld";
-#$status = get_digital_signature("keystore.p12", "password", $data_to_sign, $signature);
+$data_to_sign = "HelloWorld123";
+
 $status = true;
 
 if ($status) {
