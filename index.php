@@ -16,7 +16,9 @@ if ($result->num_rows > 0) {
 
         //Prepare QR data
         $qr_data  = $row["item id"]."*****".$row["PAGE NO/SLNO"];
+        //Counter for filename
         $count += 1;
+        //Padding with prefix zeros
         $number = str_pad($count, 3, '0', STR_PAD_LEFT);
         $filename = "qr_".$number.".png";
         //Display in Browser
