@@ -8,7 +8,6 @@ require('phpqrcode/qrlib.php');
 
 $sql = "SELECT `item id`,`PAGE NO/SLNO` FROM `isr`";
 $result = $conn->query($sql);
-echo $result->num_rows;
 $count = 0;
 if ($result->num_rows > 0) {
     // output data of each row
@@ -18,15 +17,18 @@ if ($result->num_rows > 0) {
         //Prepare QR data
         $qr_data  = $row["item id"]."*****".$row["PAGE NO/SLNO"];
         $count += 1;
-        $filename = "qr_".$count;
+        $number = str_pad($count, 3, '0', STR_PAD_LEFT);
+        $filename = "qr_".$number.".png";
         //Display in Browser
         #QRcode::png($qr_data);
         //Save to server path
         QRcode::png($qr_data, $filename, 'L', 4, 2);
+        rename($filename, 'QR\\'. $filename);
         //Get server path
         $directory = dir(getcwd());
         //Display Server path where saved
-        echo "Generated QR code image in location: ".$directory->path;
+        echo "Generated QR code image in location: ".$directory->path."\\QR\\".$filename."<br>";
+
     }
 } else {
     echo "0 results";
