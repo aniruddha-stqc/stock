@@ -3,28 +3,20 @@
 //error_reporting(E_ALL);
 require('dbconnect.php');
 require('phpqrcode/qrlib.php');
-require('signing.php');
 
 
-//Invoke the function
-$data_to_sign = "HelloWorld123";
+//Prepare QR data
+$qr_data  = "HelloWorld123";
+//Display in Browser
+#QRcode::png($qr_data);
+//Save to server path
+QRcode::png($qr_data, 'test.png', 'L', 4, 2);
+//Get server path
+$directory = dir(getcwd());
+//Display Server path where saved
+echo "Generated QR code image in location: ".$directory->path;
 
-$status = true;
 
-if ($status) {
-    //echo "QR Text<br><br>";
-    #$qr_data = $data_to_sign . "##" . $signature;
-    $qr_data = $data_to_sign ;
-    //echo '<pre>' . $qr_data . '<pre>';
-    #QRcode::png($qr_data);
-    QRcode::png($qr_data, 'test.png', 'L', 4, 2);
-    $directory = dir(getcwd());
-    echo "Generated QR code image in location: ".$directory->path;
-    
-} else {
-    echo "Unable to get digital signature";
-}
-?>
 
 
 
