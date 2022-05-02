@@ -5,10 +5,14 @@ require('dbconnect.php');
 require('phpqrcode/qrlib.php');
 
 
+function addQuotes($str){
+    return "'$str'";
+}
 
 $sql = "SELECT `item id`,`PAGE NO/SLNO` FROM `isr`";
 $result = $conn->query($sql);
 $count = 0;
+$values = array();
 if ($result->num_rows > 0) {
     // output data of each row
     while($row = $result->fetch_assoc()) {
@@ -29,16 +33,25 @@ if ($result->num_rows > 0) {
         //Get server path
         $directory = dir(getcwd());
         //Display Server path where saved
-        echo "Generated QR code image in location: ".$directory->path."\\QR\\".$filename."<br>";
+        //echo "Generated QR code image in location: ".$directory->path."\\QR\\".$filename."<br>";
+        //$path = $directory->path."\\QR\\".$filename;
+
+        $_value = "(". addQuotes($row["item id"]).",".addQuotes($row["PAGE NO/SLNO"]).",".addQuotes($filename).")";
+        array_push($values, $_value);
 
     }
+
+    $values_ = implode(",",$values);
+    $sql = "INSERT INTO qrdetails ( `ITEM_ID`,`PAGE_NO/SLNO`, `QRPATH`) VALUES" . $values_;
+    $stmt = $conn->query($sql);
+    if ($stmt  === TRUE) {
+        echo "New record created successfully";
+    } else {
+        echo "Error: " . $sql . "<br>" . $conn->error;
+    }
+
 } else {
     echo "0 results";
 }
-
-
-
-
-
 
 
