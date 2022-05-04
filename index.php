@@ -10,14 +10,20 @@ function addQuotes($str){
 }
 
 function insertQRinfo($conn, $values){
-    $values_ = implode(",",$values);
-    $sql = "INSERT INTO qrdetails ( `ITEM_ID`,`PAGE_NO/SLNO`, `QRPATH`) VALUES" . $values_;
-    $stmt = $conn->query($sql);
-    if ($stmt  === TRUE) {
-        echo "New records inserted successfully on: ".date("Y-m-d h:i:sa");
-    } else {
-        echo "Error: " . $sql . "<br>" . $conn->error;
+    //delete all old rows
+    $result = $conn->query("DELETE FROM qrdetails WHERE 1=1;");
+    //delete successful
+    if($result){
+        $values_ = implode(",",$values);
+        $sql = "INSERT INTO qrdetails ( `ITEM_ID`,`PAGE_NO/SLNO`, `QRPATH`) VALUES" . $values_;
+        $stmt = $conn->query($sql);
+        if ($stmt  === TRUE) {
+            echo "New records inserted successfully on: ".date("Y-m-d h:i:sa");
+        } else {
+            echo "Error: " . $sql . "<br>" . $conn->error;
+        }
     }
+
 }
 
 date_default_timezone_set("Asia/Calcutta");
