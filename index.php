@@ -20,6 +20,7 @@ function insertQRinfo($conn, $values){
     }
 }
 
+date_default_timezone_set("Asia/Calcutta");
 $sql = "SELECT `item id`,`PAGE NO/SLNO` FROM `isr`";
 $result = $conn->query($sql);
 $count = 0;
