@@ -9,15 +9,25 @@ function addQuotes($str){
     return "'$str'";
 }
 
+function insertQRinfo($conn, $values){
+    $values_ = implode(",",$values);
+    $sql = "INSERT INTO qrdetails ( `ITEM_ID`,`PAGE_NO/SLNO`, `QRPATH`) VALUES" . $values_;
+    $stmt = $conn->query($sql);
+    if ($stmt  === TRUE) {
+        echo "New records inserted successfully on: ".date("Y-m-d h:i:sa");
+    } else {
+        echo "Error: " . $sql . "<br>" . $conn->error;
+    }
+}
+
 $sql = "SELECT `item id`,`PAGE NO/SLNO` FROM `isr`";
 $result = $conn->query($sql);
 $count = 0;
 $values = array();
 if ($result->num_rows > 0) {
-    // output data of each row
+    // loop on each row
     while($row = $result->fetch_assoc()) {
         #echo "ITEM ID: " . $row["item id"]." "."PAGE NO/SLNO: " .$row["PAGE NO/SLNO"]."<br>";
-
         //Prepare QR data
         $qr_data  = $row["item id"]."*****".$row["PAGE NO/SLNO"];
         //Counter for filename
@@ -38,17 +48,14 @@ if ($result->num_rows > 0) {
 
         $_value = "(". addQuotes($row["item id"]).",".addQuotes($row["PAGE NO/SLNO"]).",".addQuotes($filename).")";
         array_push($values, $_value);
-
+        //check if any QR data is blank and warn the user if blank
+        if (empty(trim($row["item id"])) or empty(trim($row["PAGE NO/SLNO"]))){
+            echo "WARNING: Blank data in QR codes of: ".$filename."<br>";
+        }
     }
+    //Insert QR info to db table 'qrdetails'
+    insertQRinfo($conn, $values);
 
-    $values_ = implode(",",$values);
-    $sql = "INSERT INTO qrdetails ( `ITEM_ID`,`PAGE_NO/SLNO`, `QRPATH`) VALUES" . $values_;
-    $stmt = $conn->query($sql);
-    if ($stmt  === TRUE) {
-        echo "New record created successfully";
-    } else {
-        echo "Error: " . $sql . "<br>" . $conn->error;
-    }
 
 } else {
     echo "0 results";
