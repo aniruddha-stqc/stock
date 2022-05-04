@@ -1,5 +1,5 @@
 <?php
-
+date_default_timezone_set("Asia/Calcutta");
 //error_reporting(E_ALL);
 require('dbconnect.php');
 require('phpqrcode/qrlib.php');
@@ -11,9 +11,10 @@ function addQuotes($str){
 
 function insertQRinfo($conn, $values){
     //delete all old rows
-    $result = $conn->query("DELETE FROM qrdetails WHERE 1=1;");
+    $result = $conn->query("DELETE FROM qrdetails;");
     //delete successful
     if($result){
+        echo "Old records deleted successfully <br><br>";
         $values_ = implode(",",$values);
         $sql = "INSERT INTO qrdetails ( `ITEM_ID`,`PAGE_NO/SLNO`, `QRPATH`) VALUES" . $values_;
         $stmt = $conn->query($sql);
@@ -26,12 +27,13 @@ function insertQRinfo($conn, $values){
 
 }
 
-date_default_timezone_set("Asia/Calcutta");
+
 $sql = "SELECT `item id`,`PAGE NO/SLNO` FROM `isr`";
 $result = $conn->query($sql);
 $count = 0;
 $values = array();
 if ($result->num_rows > 0) {
+    echo "Generating ".$result->num_rows." QR codes ...<br><br>";
     // loop on each row
     while($row = $result->fetch_assoc()) {
         #echo "ITEM ID: " . $row["item id"]." "."PAGE NO/SLNO: " .$row["PAGE NO/SLNO"]."<br>";
@@ -57,7 +59,7 @@ if ($result->num_rows > 0) {
         array_push($values, $_value);
         //check if any QR data is blank and warn the user if blank
         if (empty(trim($row["item id"])) or empty(trim($row["PAGE NO/SLNO"]))){
-            echo "WARNING: Blank data in QR codes of: ".$filename."<br>";
+            echo "WARNING: Blank data in QR codes of: ".$filename."<br><br>";
         }
     }
 
