@@ -54,6 +54,7 @@ if ($result->num_rows > 0) {
             echo "WARNING: Blank data in QR codes of: ".$filename."<br>";
         }
     }
+
     //Insert QR info to db table 'qrdetails'
     insertQRinfo($conn, $values);
 
