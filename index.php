@@ -59,7 +59,7 @@ if ($result->num_rows > 0) {
         array_push($values, $_value);
         //check if any QR data is blank and warn the user if blank
         if (empty(trim($row["item id"])) or empty(trim($row["PAGE NO/SLNO"]))){
-            echo "WARNING: Blank data in QR codes of: ".$filename."<br><br>";
+            echo "WARNING: Blank data in QR codes of: ".$filename."<br>";
         }
     }
 
