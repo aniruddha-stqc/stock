@@ -14,16 +14,27 @@ function insertQRinfo($conn, $values){
     $result = $conn->query("DELETE FROM qrdetails;");
     //delete successful
     if($result){
-        echo "Old records deleted successfully <br><br>";
-        $values_ = implode(",",$values);
-        $sql = "INSERT INTO qrdetails ( `ITEM_ID`,`PAGE_NO`, `QRPATH`) VALUES" . $values_;
-        $stmt = $conn->query($sql);
-        if ($stmt  === TRUE) {
-            echo "New records inserted successfully on: ".date("Y-m-d h:i:sa");
-        } else {
-            echo "Error: " . $sql . "<br>" . $conn->error;
+        $result = $conn->query("ALTER TABLE qrdetails AUTO_INCREMENT=1;");
+        //if auto increment reinitialized
+        if($result){
+            echo "INFO: Table reinitialized successfully <br>";
+            $values_ = implode(",",$values);
+            $sql = "INSERT INTO qrdetails ( `ITEM_ID`,`PAGE_NO`, `QRPATH`) VALUES" . $values_;
+            $stmt = $conn->query($sql);
+            if ($stmt  === TRUE) {
+                echo "INFO: New records inserted successfully on: ".date("Y-m-d h:i:sa")."<br>";
+            } else {
+                echo "Error: " . $sql . "<br>" . $conn->error;
+            }
+        }
+        else{
+            echo "ERROR: Table reinitialization failed <br><br>";
         }
     }
+    else{
+        echo "ERROR: Table reinitialization failed <br><br>";
+    }
+
 
 }
 
@@ -33,7 +44,7 @@ $result = $conn->query($sql);
 $count = 0;
 $values = array();
 if ($result->num_rows > 0) {
-    echo "Generating ".$result->num_rows." QR codes ...<br><br>";
+    echo "INFO: Generating ".$result->num_rows." QR codes ...<br>";
     // loop on each row
     while($row = $result->fetch_assoc()) {
         #echo "ITEM ID: " . $row["item id"]." "."PAGE NO/SLNO: " .$row["PAGE NO/SLNO"]."<br>";
