@@ -18,8 +18,8 @@ if (isset($_POST['ITEM_ID']) && isset($_POST['PAGE_NO'])) {
 
     } else {
 
-        //check if the credential matches entry in database
-        $sql = "SELECT * FROM QRDETAILS WHERE ITEM_ID='$item_id' AND PAGE_NO = '$page_no' LIMIT 1";
+        //check if the data matches entry in database
+        $sql = "SELECT * FROM QRDETAILS WHERE ITEM_ID='$item_id' AND PAGE_NO = '$page_no'";
         //Execute the query to the MySQL data base
         $result = mysqli_query($conn, $sql);
         //If exactly one row is fetched
