@@ -11,6 +11,7 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
     $password = $_POST['password'];
     //Check if credentials are blank
     if (empty($email) || empty($password)) {
+
         $response->status = "1";
         $response->message = "email or password is mandatory";
         echo json_encode($response);
@@ -22,46 +23,15 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
         $result = mysqli_query($conn, $sql);
         //If exactly one row is fetched
         if ($result->num_rows == 1) {
-
             $response->status = "8";
             $response->message = "Found";
-
-            while ($row = $result->fetch_assoc()) {
-                $mem_name = $row["mem_name"];
-                $reg_email = $row["email"];
-                $approval_status = $row["status"];
-                $password_md5 = $row["password"];
-                //$speciality_h_image[] = $row["speciality_h_img"];
             }
-
-            if ($approval_status == "A") {
-
-                if ($password_md5 == md5($password)) {
-                    $response->status = "0";
-                    $response->message = "Credentials OK";
-                    $response->mem_name = $mem_name;
-                    $response->email = $reg_email;
-
-                } else {
-                    $response->status = "2";
-                    $response->message = "Incorrect credentials";
-
-                }
-
-            } else {
-                if ($approval_status == "P") {
-                    $response->status = "4";
-                    $response->message = "Registration pending";
-
-                }
-            }
-
-        } else {
+        else {
             $response->status = "5";
-            $response->message = "Not registered";
-
+            $response->message = "Not Found";
         }
     }
+
 } else {
     $response->status = "3";
     $response->message = "POST parameters expected";
