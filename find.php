@@ -24,11 +24,11 @@ if (isset($_POST['ITEM_ID']) && isset($_POST['PAGE_NO'])) {
         $result = mysqli_query($conn, $sql);
         //If exactly one row is fetched
         if ($result->num_rows == 1) {
-            $response->status = "8";
+            $response->status = "0";
             $response->message = "Found";
             }
         else {
-            $response->status = "5";
+            $response->status = "2";
             $response->message = "Not Found";
         }
     }
