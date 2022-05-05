@@ -16,7 +16,7 @@ function insertQRinfo($conn, $values){
     if($result){
         echo "Old records deleted successfully <br><br>";
         $values_ = implode(",",$values);
-        $sql = "INSERT INTO qrdetails ( `ITEM_ID`,`PAGE_NO/SLNO`, `QRPATH`) VALUES" . $values_;
+        $sql = "INSERT INTO qrdetails ( `ITEM_ID`,`PAGE_NO`, `QRPATH`) VALUES" . $values_;
         $stmt = $conn->query($sql);
         if ($stmt  === TRUE) {
             echo "New records inserted successfully on: ".date("Y-m-d h:i:sa");

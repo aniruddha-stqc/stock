@@ -3,22 +3,23 @@
 date_default_timezone_set("Asia/Calcutta");
 //error_reporting(E_ALL);
 require('dbconnect.php');
-
+//Initialize JSON response
+$response = new \stdClass();
 //Check if POST parameters are set
-if (isset($_POST['email']) && isset($_POST['password'])) {
+if (isset($_POST['ITEM_ID']) && isset($_POST['PAGE_NO'])) {
     //receive the post parameters of email and password
-    $email = $_POST['email'];
-    $password = $_POST['password'];
+    $item_id = $_POST['ITEM_ID'];
+    $page_no = $_POST['PAGE_NO'];
     //Check if credentials are blank
-    if (empty($email) || empty($password)) {
+    if (empty($item_id) || empty($page_no)) {
 
         $response->status = "1";
-        $response->message = "email or password is mandatory";
-        echo json_encode($response);
+        $response->message = "Incorrect request";
+
     } else {
-        //$password_md5 = md5($password);
+
         //check if the credential matches entry in database
-        $sql = "Select * from qrdetails where item_id='$email' limit 1";
+        $sql = "SELECT * FROM QRDETAILS WHERE ITEM_ID='$item_id' AND PAGE_NO = '$page_no' LIMIT 1";
         //Execute the query to the MySQL data base
         $result = mysqli_query($conn, $sql);
         //If exactly one row is fetched
