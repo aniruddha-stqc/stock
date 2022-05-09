@@ -39,7 +39,7 @@ function insertQRinfo($conn, $values){
 }
 
 
-$sql = "SELECT `item id`,`PAGE NO/SLNO` FROM `isr`";
+$sql = "SELECT ITEM_ID, PAGE_NO FROM ISR";
 $result = $conn->query($sql);
 $count = 0;
 $values = array();
@@ -49,7 +49,7 @@ if ($result->num_rows > 0) {
     while($row = $result->fetch_assoc()) {
         #echo "ITEM ID: " . $row["item id"]." "."PAGE NO/SLNO: " .$row["PAGE NO/SLNO"]."<br>";
         //Prepare QR data
-        $qr_data  = $row["item id"]."*****".$row["PAGE NO/SLNO"];
+        $qr_data  = $row["ITEM_ID"]."*****".$row["PAGE_NO"];
         //Counter for filename
         $count += 1;
         //Padding with prefix zeros
@@ -66,16 +66,16 @@ if ($result->num_rows > 0) {
         //echo "Generated QR code image in location: ".$directory->path."\\QR\\".$filename."<br>";
         //$path = $directory->path."\\QR\\".$filename;
 
-        $_value = "(". addQuotes($row["item id"]).",".addQuotes($row["PAGE NO/SLNO"]).",".addQuotes($filename).")";
+        $_value = "(". addQuotes($row["ITEM_ID"]).",".addQuotes($row["PAGE_NO"]).",".addQuotes($filename).")";
         array_push($values, $_value);
         //check if any QR data is blank and warn the user if blank
-        if (empty(trim($row["item id"])) or empty(trim($row["PAGE NO/SLNO"]))){
+        if (empty(trim($row["ITEM_ID"])) or empty(trim($row["PAGE_NO"]))){
             echo "WARNING: Blank data in QR codes of: ".$filename."<br>";
         }
     }
 
     //Insert QR info to db table 'qrdetails'
-    insertQRinfo($conn, $values);
+    //insertQRinfo($conn, $values);
 
 
 } else {
