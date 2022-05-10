@@ -8,6 +8,35 @@ require('phpqrcode/qrlib.php');
 
 
 
+define('FPDF_FONTPATH','pdftable/font/');
+require('pdftable/lib/pdftable.inc.php');
+
+class PDF extends PDFTable{
+
+    function __construct($orientation='P',$unit='mm',$format='A4'){
+        PDFTable::PDFTable($orientation,$unit,$format);
+        $this->AliasNbPages();
+    }
+
+}
+
+function convert_jpg_png($filename_png,$filename_jpg){
+    //echo $filename_png."*****".$filename_jpg;
+
+    $image = imagecreatefrompng($filename_png);
+    $bg = imagecreatetruecolor(imagesx($image), imagesy($image));
+    imagefill($bg, 0, 0, imagecolorallocate($bg, 255, 255, 255));
+    imagealphablending($bg, TRUE);
+    //echo "1";
+    imagecopy($bg, $image, 0, 0, 0, 0, imagesx($image), imagesy($image));
+    imagedestroy($image);
+    $quality = 50; // 0 = worst / smaller file, 100 = better / bigger file
+   // echo "2";
+    imagejpeg($bg, $filename_jpg , $quality);
+   // echo "3";
+    imagedestroy($bg);
+    unlink($filename_png);
+}
 $qr_data = "test_qr_data";
 $pdf_file="Product-list.pdf";
 
@@ -32,26 +61,24 @@ while($i <= 10)
     //Counter for filename
 
     $number = str_pad($count, 3, '0', STR_PAD_LEFT);
-    $filename_png = "qr_".$number.".png";
-    $filename_jpg = "qr_".$number.".jpg";
+    $filename_png = "QR\\qr_".$number.".png";
+    $filename_jpg = "QR\\qr_".$number.".jpg";
 
         //QRimage::jpg($qr_data, $filename,'L', 2, 0, 100, true, true);
         //rename($filename, 'QR\\'. $filename);
     QRcode::png($qr_data,  $filename_png, 'L', 4, 2);
     //rename( $filename_png, 'QR\\'.  $filename_png);
-    $image = imagecreatefrompng($filename_png);
-    $bg = imagecreatetruecolor(imagesx($image), imagesy($image));
-    imagefill($bg, 0, 0, imagecolorallocate($bg, 255, 255, 255));
-    imagealphablending($bg, TRUE);
-    imagecopy($bg, $image, 0, 0, 0, 0, imagesx($image), imagesy($image));
-    imagedestroy($image);
-    $quality = 50; // 0 = worst / smaller file, 100 = better / bigger file
-    imagejpeg($bg, $filename_jpg , $quality);
-    imagedestroy($bg);
-    unlink($filename_png);
+   // echo $filename_png,$filename_jpg;
+    convert_jpg_png($filename_png,$filename_jpg);
+
+
+
+   // echo $filename_png,$filename_jpg;
+
     //imagedestroy('QR\\'.  $filename_png);
 
         $pdf_grid .="<td><img src='".$filename_jpg."'></td></tr>";
+
         //$pdf_grid .="<td>".$row['item id']."</td></tr>";
         $count++;
         //Get server path
@@ -61,18 +88,6 @@ while($i <= 10)
 $pdf_grid .="</table>";
 //echo $pdf_grid;
 
-
-define('FPDF_FONTPATH','pdftable/font/');
-require('pdftable/lib/pdftable.inc.php');
-
-class PDF extends PDFTable{
-
-    function __construct($orientation='P',$unit='mm',$format='A4'){
-        PDFTable::PDFTable($orientation,$unit,$format);
-        $this->AliasNbPages();
-    }
-
-}
 
 $p = new PDF();
 $p->SetLeftMargin(7);
