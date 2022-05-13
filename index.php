@@ -5,6 +5,37 @@ require('dbconnect.php');
 require('phpqrcode/qrlib.php');
 
 
+
+define('FPDF_FONTPATH','pdftable/font/');
+require('pdftable/lib/pdftable.inc.php');
+
+class PDF extends PDFTable{
+
+    function __construct($orientation='P',$unit='mm',$format='A4'){
+        PDFTable::PDFTable($orientation,$unit,$format);
+        $this->AliasNbPages();
+    }
+
+}
+
+function convert_jpg_png($filename_png,$filename_jpg){
+    //echo $filename_png."*****".$filename_jpg;
+
+    $image = imagecreatefrompng($filename_png);
+    $bg = imagecreatetruecolor(imagesx($image), imagesy($image));
+    imagefill($bg, 0, 0, imagecolorallocate($bg, 255, 255, 255));
+    imagealphablending($bg, TRUE);
+    //echo "1";
+    imagecopy($bg, $image, 0, 0, 0, 0, imagesx($image), imagesy($image));
+    imagedestroy($image);
+    $quality = 50; // 0 = worst / smaller file, 100 = better / bigger file
+    // echo "2";
+    imagejpeg($bg, $filename_jpg , $quality);
+    // echo "3";
+    imagedestroy($bg);
+    unlink($filename_png);
+}
+
 function addQuotes($str){
     return "'$str'";
 }
@@ -54,24 +85,26 @@ if ($result->num_rows > 0) {
         $count += 1;
         //Padding with prefix zeros
         $number = str_pad($count, 3, '0', STR_PAD_LEFT);
-        $filename = "qr_".$number.".png";
+        $filename_png = "QR\\qr_".$number.".png";
+        $filename_jpg = "QR\\qr_".$number.".jpg";
         //Display in Browser
         #QRcode::png($qr_data);
         //Save to server path
-        QRcode::png($qr_data, $filename, 'L', 4, 2);
-        rename($filename, 'QR\\'. $filename);
+        QRcode::png($qr_data, $filename_png, 'L', 4, 2);
+        rename($filename_png, 'QR\\'. $filename_png);
         //Get server path
         $directory = dir(getcwd());
         //Display Server path where saved
         //echo "Generated QR code image in location: ".$directory->path."\\QR\\".$filename."<br>";
         //$path = $directory->path."\\QR\\".$filename;
 
-        $_value = "(". addQuotes($row["ITEM_ID"]).",".addQuotes($row["PAGE_NO"]).",".addQuotes($filename).")";
+        /*$_value = "(". addQuotes($row["ITEM_ID"]).",".addQuotes($row["PAGE_NO"]).",".addQuotes($filename).")";
         array_push($values, $_value);
         //check if any QR data is blank and warn the user if blank
         if (empty(trim($row["ITEM_ID"])) or empty(trim($row["PAGE_NO"]))){
             echo "WARNING: Blank data in QR codes of: ".$filename."<br>";
-        }
+
+        }*/
     }
 
     //Insert QR info to db table 'qrdetails'
